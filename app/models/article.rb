@@ -126,6 +126,21 @@ class Article < Content
     published_at.year.to_s
   end
 
+  def merge_with(id=nil)
+    unless id.nil?
+      article2 = Article.find(id)
+      self.body=self.body+article2.body
+      article2.feedback.each do |comment|
+        comment.article_id=self.id      
+        comment.save!
+      end
+      self.published = true
+      Article.delete(id)
+    end     
+  
+    return self 
+  end 
+
   def month_url
     sprintf("%.2d", published_at.month)
   end

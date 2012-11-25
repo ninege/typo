@@ -37,6 +37,8 @@ class Admin::ContentController < Admin::BaseController
     new_or_edit
   end
 
+
+
   def destroy
     @record = Article.find(params[:id])
 
@@ -111,6 +113,22 @@ class Admin::ContentController < Admin::BaseController
       return true
     end
     render :text => nil
+  end
+
+  def merge
+    @article_master = Article.find(params[:id])
+    
+    unless current_user.admin?
+      redirect_to :action => 'index'
+      flash[:error] = _("Error, you are not allowed to perform this action")
+      return
+    end
+    @article_master.merge_with(params[:merge_with])
+    @article_master.save!   
+    redirect_to :action => 'index'
+    flash[:notice] = _("Articles merged successfully, new content:\n "+@article_master.body)
+    #flash[:notice] = _("\n\object.methods : "+ @article_master.methods.sort.join("\n").to_s+"\n\n")
+    return
   end
 
   protected

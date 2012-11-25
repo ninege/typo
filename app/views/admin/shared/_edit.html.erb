@@ -2,5 +2,14 @@
 <%= form_tag(form_action, :id => "#{form_type}_form", :enctype => "multipart/form-data", :class => className) do %>
 
   <%= render :partial => "form" %>
+  
 
+<% end %>
+
+<% if request.fullpath.to_s.include? '/edit/' and current_user.admin?%>
+	<%= render :partial => "merge_form" %>
+<% end %>
+
+<% @article.feedback.each do |comment| %>
+<%=comment.body.to_s%>
 <% end %>
